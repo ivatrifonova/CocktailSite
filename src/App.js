@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./components/Home/Home";
+import Login from "./components/Login/Login";
+import { useState } from "react";
 
 function App() {
+  let [user, setUser] = useState(localStorage.getItem("user"));
+
+  let loginCallback = () => {
+    let existingUser = localStorage.getItem("user");
+    setUser(existingUser);
+  };
+
+  let logoutCallback = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Switch>
+          <Route exact path="/">
+            {user ? (
+              <Home logout={logoutCallback} />
+            ) : (
+              <Login login={loginCallback} />
+            )}
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
